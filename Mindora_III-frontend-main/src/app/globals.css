@@ -1,0 +1,167 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Design system - Figma tokens */
+  --color-primary: #7c3aed;
+  --color-primary-dark: #5b21d0;
+  --color-bg-dark: #0d0d0d;
+  --color-bg-card: #1a1a1a;
+  --color-bg-light: #ffffff;
+  --color-purple-panel: #3b0764;
+  --color-text-primary: #f9fafb;
+  --color-text-muted: #9ca3af;
+  --color-border-dark: #2d2d2d;
+
+  /* App surfaces (light pages) */
+  --background: #ffffff;
+  --foreground: #111827;
+  --muted: #6b7280;
+  --muted-foreground: #9ca3af;
+  --border: #e5e7eb;
+  --input: #f3f4f6;
+  --ring: var(--color-primary);
+
+  /* Aliases used across components */
+  --mindora-purple: var(--color-primary);
+  --mindora-purple-dark: var(--color-primary-dark);
+  --mindora-purple-light: #a78bfa;
+  --mindora-purple-pale: #ede9fe;
+  --mindora-purple-bg: #f5f3ff;
+  --mindora-section-lavender: #ebe4f7;
+  --mindora-lavender: #ddd6fe;
+  /* Neumorphic dark surface (sidebars + dark cards) - shared across AppSidebar,
+     TherapistSidebar, AdminSidebar, and dark cards on /today. */
+  --mindora-sidebar: #211d2c;
+  --mindora-sidebar-elevated: #251f33;
+  --mindora-sidebar-hover: #1a1a1a;
+  --mindora-gradient-start: var(--color-purple-panel);
+  --mindora-gradient-mid: #5b21b6;
+  --mindora-gradient-end: var(--color-primary);
+  --mindora-card-dark: var(--color-bg-card);
+  --mindora-success: #22c55e;
+  --mindora-success-bg: #dcfce7;
+  --mindora-pending: var(--color-primary);
+  --mindora-pending-bg: #ede9fe;
+
+  /* Type scale */
+  --text-caption: 12px;
+  --text-small: 14px;
+  --text-body: 16px;
+  --text-subtitle: 20px;
+  --text-h3: 24px;
+  --text-h2: 32px;
+  --text-h1: 48px;
+
+  /* Shadcn-compatible semantic surfaces */
+  --primary-light: oklch(93% 0.06 293);
+  --primary-foreground: oklch(98% 0 0);
+  --bg-elevated: oklch(17% 0 0);
+  --purple-panel-from: oklch(22% 0.22 293);
+  --purple-panel-to: oklch(37% 0.25 293);
+  --text-subtle: oklch(52% 0 0);
+  --text-dark: oklch(11% 0 0);
+  --border-light: oklch(90% 0 0);
+  --destructive: oklch(55% 0.22 29);
+  --destructive-foreground: oklch(98% 0 0);
+  --accent: var(--input);
+  --accent-foreground: var(--foreground);
+  --popover: var(--background);
+  --popover-foreground: var(--foreground);
+  --card: var(--background);
+  --card-foreground: var(--foreground);
+  --secondary: var(--input);
+  --secondary-foreground: var(--foreground);
+  --success: oklch(68% 0.18 160);
+  --warning: oklch(75% 0.18 75);
+  --error: oklch(60% 0.22 29);
+  --crisis: oklch(95% 0.08 90);
+  --radius: 0.5rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: #7c3aed;
+  --color-primary-dark: #5b21d0;
+  --color-bg-dark: #0d0d0d;
+  --color-bg-card: #1a1a1a;
+  --color-bg-light: #ffffff;
+  --color-purple-panel: #3b0764;
+  --color-text-primary: #f9fafb;
+  --color-text-muted: #9ca3af;
+  --color-border-dark: #2d2d2d;
+  --color-mindora-purple: var(--mindora-purple);
+  --color-mindora-purple-dark: var(--mindora-purple-dark);
+  --color-mindora-purple-light: var(--mindora-purple-light);
+  --color-mindora-purple-pale: var(--mindora-purple-pale);
+  --color-mindora-purple-bg: var(--mindora-purple-bg);
+  --color-mindora-section-lavender: var(--mindora-section-lavender);
+  --color-mindora-lavender: var(--mindora-lavender);
+  --color-mindora-sidebar: var(--mindora-sidebar);
+  --color-mindora-sidebar-elevated: var(--mindora-sidebar-elevated);
+  --color-mindora-sidebar-hover: var(--mindora-sidebar-hover);
+  --color-mindora-card-dark: var(--mindora-card-dark);
+  --color-mindora-success: var(--mindora-success);
+  --color-mindora-success-bg: var(--mindora-success-bg);
+  --color-mindora-pending-bg: var(--mindora-pending-bg);
+  --font-sans: var(--font-inter);
+
+  --color-primary-light: var(--primary-light);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-purple-panel-from: var(--purple-panel-from);
+  --color-purple-panel-to: var(--purple-panel-to);
+  --color-text-subtle: var(--text-subtle);
+  --color-text-dark: var(--text-dark);
+  --color-border-light: var(--border-light);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-crisis: var(--crisis);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: var(--text-body);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+
+  body.auth-page {
+    background-color: var(--color-bg-light);
+    color: var(--color-text-dark);
+  }
+}
