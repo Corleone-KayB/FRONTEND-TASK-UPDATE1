@@ -1,0 +1,57 @@
+name: MINDORA Frontend CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Mindora_III-frontend-main/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "Mindora_III-frontend-main/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-and-build:
+    name: Validate and build production frontend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Mindora_III-frontend-main
+    env:
+      NEXT_PUBLIC_API_URL: https://api.mindora.rw
+      NEXT_PUBLIC_SOCKET_URL: https://api.mindora.rw
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 24.16.0
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.16.0
+          cache: npm
+          cache-dependency-path: Mindora_III-frontend-main/package-lock.json
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: TypeScript type check
+        run: npm run type-check
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Prettier
+        run: npm run format:check
+
+      - name: Unit tests
+        run: npm run test:coverage
+
+      - name: Next.js production build
+        run: npm run build
+
+      - name: Build Railway Docker image
+        run: docker build -f Dockerfile -t mindora-frontend:ci .
