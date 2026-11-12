@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { CalendarClock, CalendarX, ClipboardList, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { useTherapistDashboard } from "@/hooks/useAppointments";
+import { usePatientName, useTherapistDashboard } from "@/hooks/useAppointments";
 import type { BookedAppointment } from "@/types/domain";
 
 const STATUS_VARIANT = {
@@ -21,13 +21,9 @@ function formatSessionType(type: BookedAppointment["sessionType"]): string {
   return type === "VIDEO" ? "Video call" : "Audio call";
 }
 
-function patientLabel(patientId: string): string {
-  return `Patient ${patientId.slice(0, 8)}`;
-}
-
 interface StatCardProps {
   label: string;
-  value: number;
+  value: number | null;
   icon: React.ElementType;
 }
 
@@ -38,7 +34,7 @@ function StatCard({ label, value, icon: Icon }: StatCardProps) {
         <Icon className="h-5 w-5" />
       </div>
       <div>
-        <p className="text-[22px] font-bold leading-tight text-foreground">{value}</p>
+        <p className="text-[22px] font-bold leading-tight text-foreground">{value ?? "–"}</p>
         <p className="text-[12.5px] text-muted-foreground">{label}</p>
       </div>
     </div>
@@ -59,6 +55,7 @@ function StatCardSkeleton() {
 
 export default function TherapistDashboardPage() {
   const { data, isLoading, isError } = useTherapistDashboard();
+  const patientLabel = usePatientName();
 
   const sessions = [...(data?.todaysSessions ?? [])].sort(
     (a, b) => new Date(a.slotStart).getTime() - new Date(b.slotStart).getTime()
@@ -89,15 +86,19 @@ export default function TherapistDashboardPage() {
           <>
             <StatCard
               label="Pending requests"
-              value={data?.pendingCount ?? 0}
+              value={isError ? null : (data?.pendingCount ?? 0)}
               icon={ClipboardList}
             />
             <StatCard
               label="Upcoming sessions"
-              value={data?.upcomingCount ?? 0}
+              value={isError ? null : (data?.upcomingCount ?? 0)}
               icon={CalendarClock}
             />
-            <StatCard label="Patients" value={data?.patientCount ?? 0} icon={Users} />
+            <StatCard
+              label="Patients"
+              value={isError ? null : (data?.patientCount ?? 0)}
+              icon={Users}
+            />
           </>
         )}
       </div>
@@ -107,7 +108,7 @@ export default function TherapistDashboardPage() {
 
         {isLoading ? (
           <p className="py-5 text-[13.5px] text-muted-foreground">Loading today&apos;s sessions…</p>
-        ) : sessions.length === 0 ? (
+        ) : isError ? null : sessions.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-dashed border-mindora-lavender text-mindora-purple-light">
               <CalendarX className="h-6 w-6" />

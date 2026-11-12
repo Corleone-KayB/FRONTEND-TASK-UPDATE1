@@ -40,9 +40,9 @@ export default function TherapistPatientsPage() {
 
       {isLoading ? (
         <p className="py-5 text-[13.5px] text-muted-foreground">Loading patients…</p>
-      ) : (
+      ) : isError ? null : (
         <div className="overflow-hidden rounded-[26px] bg-white p-2 shadow-[10px_10px_22px_#cbc4de,-10px_-10px_22px_#fdfbff]">
-          <div className="flex items-center gap-4 px-3.5 py-2.5 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+          <div className="hidden items-center gap-4 px-3.5 py-2.5 text-[11px] font-bold uppercase tracking-wide text-muted-foreground sm:flex">
             <span className="flex-1">Patient</span>
             <span className="w-[130px] shrink-0 text-right">Total sessions</span>
             <span className="w-[190px] shrink-0 text-right">Last session</span>
@@ -54,14 +54,18 @@ export default function TherapistPatientsPage() {
             </p>
           ) : (
             patients.map((p) => (
-              <div key={p.patientId} className="flex items-center gap-4 rounded-[18px] px-3.5 py-4">
+              <div
+                key={p.patientId}
+                className="flex flex-col gap-1 rounded-[18px] px-3.5 py-4 sm:flex-row sm:items-center sm:gap-4"
+              >
                 <p className="min-w-0 flex-1 truncate text-[14px] font-semibold text-foreground">
                   {patientDisplayName(p.userName, p.patientId)}
                 </p>
-                <p className="w-[130px] shrink-0 text-right text-[13px] text-foreground">
+                <p className="text-[13px] text-foreground sm:w-[130px] sm:shrink-0 sm:text-right">
+                  <span className="text-muted-foreground sm:hidden">Total sessions: </span>
                   {p.totalSessions}
                 </p>
-                <p className="w-[190px] shrink-0 text-right text-[12px] text-muted-foreground">
+                <p className="text-[12px] text-muted-foreground sm:w-[190px] sm:shrink-0 sm:text-right">
                   {fmtLastSession(p.lastSessionAt)}
                 </p>
               </div>

@@ -9,6 +9,7 @@ import { MoodReportDialog } from "@/components/therapist/MoodReportDialog";
 import {
   useCompleteAppointment,
   useConfirmAppointment,
+  usePatientName,
   useTherapistSchedule,
 } from "@/hooks/useAppointments";
 import type { BookedAppointment } from "@/types/domain";
@@ -34,8 +35,8 @@ function formatSessionType(type: BookedAppointment["sessionType"]): string {
   return type === "VIDEO" ? "Video call" : "Audio call";
 }
 
-function patientLabel(patientId: string): string {
-  return `Patient ${patientId.slice(0, 8)}`;
+function fmtEnd(iso: string): string {
+  return new Date(iso).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 }
 
 export default function TherapistSchedulePage() {
@@ -43,6 +44,7 @@ export default function TherapistSchedulePage() {
   const [moodTarget, setMoodTarget] = useState<string | null>(null);
 
   const { data, isLoading, isError } = useTherapistSchedule(date || undefined);
+  const patientLabel = usePatientName();
   const confirmMutation = useConfirmAppointment();
   const completeMutation = useCompleteAppointment();
 
@@ -80,7 +82,7 @@ export default function TherapistSchedulePage() {
 
       {isLoading ? (
         <p className="py-5 text-[13.5px] text-muted-foreground">Loading your schedule…</p>
-      ) : appointments.length === 0 ? (
+      ) : isError ? null : appointments.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-dashed border-mindora-lavender text-mindora-purple-light">
             <CalendarX className="h-6 w-6" />
@@ -97,12 +99,12 @@ export default function TherapistSchedulePage() {
               key={apt.id}
               className="flex flex-wrap items-center gap-4 border-b border-border px-5 py-4 last:border-b-0"
             >
-              <div className="min-w-0 flex-1">
+              <div className="min-w-[12rem] flex-1">
                 <p className="text-[14.5px] font-bold text-foreground">
                   {patientLabel(apt.patientId)}
                 </p>
                 <p className="mt-0.5 text-[12.5px] text-muted-foreground">
-                  {formatSessionType(apt.sessionType)} · {fmtWhen(apt.slotStart)}
+                  {formatSessionType(apt.sessionType)} · {fmtWhen(apt.slotStart)} – {fmtEnd(apt.slotEnd)}
                 </p>
                 {apt.status === "CANCELLED" && apt.cancellationReason && (
                   <p className="mt-0.5 text-[12px] text-red-700">

@@ -80,9 +80,23 @@ export function useRateAppointment() {
   });
 }
 
+// A booking is made in the patient's own session, so the therapist's cache can't be
+// invalidated from there. Therapist views pick up new bookings on mount, on window
+// focus, and through this light poll.
+const THERAPIST_POLL_MS = 60 * 1000;
+
+// Confirm/complete change the schedule, the dashboard counts/today list and the
+// patients' session totals, so refresh the whole therapist family.
+function invalidateTherapistViews(queryClient: ReturnType<typeof useQueryClient>) {
+  queryClient.invalidateQueries({ queryKey: ["appointments", "schedule"] });
+  queryClient.invalidateQueries({ queryKey: ["appointments", "dashboard"] });
+  queryClient.invalidateQueries({ queryKey: ["appointments", "patients"] });
+}
+
 export function useTherapistSchedule(date?: string) {
   return useQuery({
     queryKey: ["appointments", "schedule", date],
+    refetchInterval: THERAPIST_POLL_MS,
     // Pre-existing bug, found live: this requested limit: 100, but
     // appointment-service's therapistScheduleQuerySchema caps limit at 50
     // and 400s above that - every therapist landing on /therapist (the
@@ -96,7 +110,7 @@ export function useConfirmAppointment() {
   return useMutation({
     mutationFn: (id: string) => confirmAppointment(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["appointments", "schedule"] });
+      invalidateTherapistViews(queryClient);
       toast.success("Appointment confirmed.");
     },
     onError: (error) => toast.error(errorMessage(error, "Could not confirm this appointment.")),
@@ -108,7 +122,7 @@ export function useCompleteAppointment() {
   return useMutation({
     mutationFn: (id: string) => completeAppointment(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["appointments", "schedule"] });
+      invalidateTherapistViews(queryClient);
       toast.success("Appointment marked complete.");
     },
     onError: (error) => toast.error(errorMessage(error, "Could not complete this appointment.")),
@@ -119,6 +133,7 @@ export function useTherapistDashboard() {
   return useQuery({
     queryKey: ["appointments", "dashboard"],
     queryFn: () => fetchTherapistDashboard(),
+    refetchInterval: THERAPIST_POLL_MS,
   });
 }
 
@@ -183,4 +198,12 @@ export function useTherapistPatients(page: number, limit = 20) {
     queryKey: ["appointments", "patients", page, limit],
     queryFn: () => fetchTherapistPatients({ page, limit }),
   });
+}
+
+// Appointments only carry a patientId, so resolve display names from the patients
+// list (best effort: first 50 patients; anyone else falls back to a short id).
+export function usePatientName(): (patientId: string) => string {
+  const { data } = useTherapistPatients(1, 50);
+  const names = new Map((data?.patients ?? []).map((p) => [p.patientId, p.userName]));
+  return (patientId) => names.get(patientId) ?? `Patient ${patientId.slice(0, 8)}`;
 }
