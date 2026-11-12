@@ -1,4 +1,4 @@
-import { apiFetch } from "@/lib/api";
+import { ApiError, apiFetch } from "@/lib/api";
 import { toQueryString } from "@/lib/query-string";
 import type {
   AppointmentStatus,
@@ -89,6 +89,41 @@ export function bookAppointment(body: {
     method: "POST",
     body: JSON.stringify(body),
   });
+}
+
+export type BookingBody = Parameters<typeof bookAppointment>[0];
+
+// What the UI sees after trying to book: exactly three outcomes, never a throw.
+// - conflict: HTTP 409, slot taken. `message` is only set when the body matches the
+//   agreed format (docs/BOOKING_CONTRACT.md); otherwise the UI uses its own text.
+// - error: anything else. `network` is true when no HTTP response arrived at all.
+export type BookingOutcome =
+  | { kind: "success"; appointment: BookedAppointment }
+  | { kind: "conflict"; message?: string }
+  | { kind: "error"; network: boolean; message?: string };
+
+// Agreed 409 body: { error: "SLOT_TAKEN", message: "<friendly text>" }. Only string
+// fields are read; anything else is ignored and the caller falls back to its own copy.
+function conflictMessage(body: unknown): string | undefined {
+  if (typeof body !== "object" || body === null) return undefined;
+  const { error, message } = body as Record<string, unknown>;
+  if (error !== "SLOT_TAKEN" || typeof message !== "string" || !message.trim()) return undefined;
+  return message;
+}
+
+// Wraps bookAppointment so components never inspect HTTP status codes themselves.
+export async function submitBooking(body: BookingBody): Promise<BookingOutcome> {
+  try {
+    return { kind: "success", appointment: await bookAppointment(body) };
+  } catch (err) {
+    if (err instanceof ApiError) {
+      if (err.status === 409) return { kind: "conflict", message: conflictMessage(err.body) };
+      if (err.status === 0) return { kind: "error", network: true };
+      // Server wording is only trusted for 4xx (e.g. a business-rule refusal); 5xx text is noise.
+      return { kind: "error", network: false, message: err.status < 500 ? err.message : undefined };
+    }
+    return { kind: "error", network: false };
+  }
 }
 
 // PUT /api/v1/appointments/:id/cancel

@@ -234,6 +234,12 @@ All paths are prefixed `/api/v1`. No secrets in the frontend: the only env vars 
   - Keep existing 409 handling.
 - `src/components/therapy/BookingDialog.test.tsx` (new) — mock `@/hooks/useAppointments`; cover loading, empty, error, 409, success.
 
+**Status (2026-11-12): BUILT, mock-tested. NOT deployed. NOT tested against the real backend.**
+- Done in `BookingDialog.tsx`: review step, success screen, availability error + retry, no-availability empty state, loading, generic/network errors on the review step, 409 returns to slot selection.
+- Booking calls go through `submitBooking()` in `src/lib/appointments-api.ts` (outcomes: success / conflict / error); `useBookAppointment` no longer toasts or throws.
+- Tests: `BookingDialog.test.tsx`, `appointments-api.test.ts`. Mocked-browser evidence at 375/1280: `docs/evidence/booking/`.
+- Assumptions and the 409 format: `docs/BOOKING_CONTRACT.md` (409 format APPROVED by Kwizera Boss; BE2 server side not confirmed).
+
 ### Step 4 — Public booking entry
 
 **Modify**

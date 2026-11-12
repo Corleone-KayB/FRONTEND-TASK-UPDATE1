@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
-  bookAppointment,
   cancelAppointment,
   completeAppointment,
   confirmAppointment,
@@ -15,10 +14,12 @@ import {
   fetchTherapistSchedule,
   fetchTherapistTimeOff,
   rateAppointment,
+  submitBooking,
   updateTherapistAvailability,
 } from "@/lib/appointments-api";
+import type { BookingBody } from "@/lib/appointments-api";
 import { ApiError } from "@/lib/api";
-import type { AppointmentStatus, SessionType, WorkingHoursWindow } from "@/types/domain";
+import type { AppointmentStatus, WorkingHoursWindow } from "@/types/domain";
 
 function errorMessage(error: unknown, fallback: string): string {
   return error instanceof ApiError ? error.message : fallback;
@@ -42,19 +43,18 @@ export function useAvailability(therapistId: string | null) {
 export function useBookAppointment() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (body: {
-      therapistId: string;
-      slotStart: string;
-      slotEnd: string;
-      sessionType: SessionType;
-    }) => bookAppointment(body),
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["appointments", "mine"] });
+    // Resolves with a BookingOutcome (success | conflict | error) instead of throwing,
+    // so BookingDialog can show a distinct state for each. No toast here - the dialog
+    // renders its own success screen and inline errors.
+    mutationFn: (body: BookingBody) => submitBooking(body),
+    onSuccess: (outcome, variables) => {
+      if (outcome.kind === "error") return;
+      // On a conflict the cached slots are stale, so refetch them as well.
       queryClient.invalidateQueries({ queryKey: ["availability", variables.therapistId] });
-      toast.success("Appointment booked.");
+      if (outcome.kind === "success") {
+        queryClient.invalidateQueries({ queryKey: ["appointments", "mine"] });
+      }
     },
-    // No onError toast here - BookingDialog already shows this inline, including
-    // the distinct 409 "slot just taken" case, which a generic toast would flatten.
   });
 }
 
