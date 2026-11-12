@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, RotateCcw } from "lucide-react";
 import type { TherapistProfile } from "@/types/domain";
 import { cn } from "@/lib/utils";
 import { useDominantColor, isLightColor } from "@/hooks/useDominantColor";
@@ -30,6 +30,9 @@ interface TherapistCardProps {
 
 export function TherapistCard({ therapist, index, onBook }: TherapistCardProps) {
   const [photoFailed, setPhotoFailed] = useState(false);
+  // Hover and focus flip the card on desktop; tap and keyboard use this state so the
+  // "Get started" action on the back face is reachable on touch devices too.
+  const [flipped, setFlipped] = useState(false);
   const showPhoto = !!therapist.photoUrl && !photoFailed;
 
   // Tint the card to match the photo's own backdrop color. Falls back to the
@@ -44,9 +47,28 @@ export function TherapistCard({ therapist, index, onBook }: TherapistCardProps) 
 
   return (
     <div className="group aspect-[3/4] [perspective:1000px]">
-      <div className="relative h-full w-full transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] group-focus-within:[transform:rotateY(180deg)]">
+      <div
+        className={cn(
+          "relative h-full w-full transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] group-focus-within:[transform:rotateY(180deg)]",
+          flipped && "[transform:rotateY(180deg)]"
+        )}
+      >
         {/* FRONT - photo + name */}
-        <div className="absolute inset-0 flex flex-col overflow-hidden rounded-[20px] shadow-[10px_10px_22px_#cbc4de,-10px_-10px_22px_#fdfbff] [backface-visibility:hidden]">
+        <div
+          className={cn(
+            "absolute inset-0 flex flex-col overflow-hidden rounded-[20px] shadow-[10px_10px_22px_#cbc4de,-10px_-10px_22px_#fdfbff] [backface-visibility:hidden]",
+            // The hidden front face would otherwise still win hit-testing over the back face's buttons.
+            "group-hover:pointer-events-none group-focus-within:pointer-events-none",
+            flipped && "pointer-events-none"
+          )}
+        >
+          <button
+            type="button"
+            onClick={() => setFlipped(true)}
+            tabIndex={-1}
+            aria-label={`Show details for ${therapist.userName ?? "therapist"}`}
+            className="absolute inset-0 z-10 rounded-[20px] focus-visible:ring-2 focus-visible:ring-mindora-purple focus-visible:outline-none"
+          />
           <div className={cn("relative min-h-0 flex-1", bgClass)} style={bgStyle}>
             {showPhoto ? (
               <img
@@ -83,16 +105,26 @@ export function TherapistCard({ therapist, index, onBook }: TherapistCardProps) 
           )}
           style={bgStyle}
         >
-          <span
-            className={cn(
-              "rounded-full px-3 py-1.5 text-[11px] font-bold whitespace-nowrap",
-              therapist.isAcceptingPatients
-                ? "bg-white/90 text-mindora-success"
-                : "bg-black/75 text-white"
-            )}
-          >
-            {therapist.isAcceptingPatients ? "Accepting patients" : "Not accepting"}
-          </span>
+          <div className="flex w-full items-center justify-between">
+            <span
+              className={cn(
+                "rounded-full px-3 py-1.5 text-[11px] font-bold whitespace-nowrap",
+                therapist.isAcceptingPatients
+                  ? "bg-white/90 text-mindora-success"
+                  : "bg-black/75 text-white"
+              )}
+            >
+              {therapist.isAcceptingPatients ? "Accepting patients" : "Not accepting"}
+            </span>
+            <button
+              type="button"
+              onClick={() => setFlipped(false)}
+              aria-label="Back to photo"
+              className="-my-2 -mr-3 flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/10"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </button>
+          </div>
 
           <div className="flex flex-1 flex-col items-center justify-center gap-4">
             <div className="font-serif text-2xl font-bold">{therapist.userName ?? "Therapist"}</div>
@@ -116,7 +148,7 @@ export function TherapistCard({ therapist, index, onBook }: TherapistCardProps) 
             onClick={onBook}
             disabled={!therapist.isAcceptingPatients}
             className={cn(
-              "flex items-center gap-1.5 text-[15px] font-bold",
+              "flex min-h-11 items-center gap-1.5 px-4 text-[15px] font-bold",
               therapist.isAcceptingPatients
                 ? "cursor-pointer hover:underline"
                 : "cursor-not-allowed opacity-50"

@@ -153,7 +153,7 @@ export function BookingDialog({ therapist, onOpenChange }: BookingDialogProps) {
                       type="button"
                       onClick={() => setSessionType(opt.value)}
                       className={cn(
-                        "flex-1 rounded-[10px] border px-1.5 py-2.5 text-[12.5px] font-bold",
+                        "flex-1 rounded-[10px] border px-1.5 py-2.5 max-lg:min-h-11 text-[12.5px] font-bold",
                         sessionType === opt.value
                           ? "border-mindora-purple bg-mindora-purple text-white"
                           : "border-border bg-background text-foreground/80"
@@ -237,7 +237,7 @@ export function BookingDialog({ therapist, onOpenChange }: BookingDialogProps) {
                         type="button"
                         onClick={() => setSelectedSlot(slot)}
                         className={cn(
-                          "rounded-[9px] border px-3.5 py-2 text-[13px] font-semibold",
+                          "rounded-[9px] border px-3.5 py-2 max-lg:min-h-11 text-[13px] font-semibold",
                           selected
                             ? "border-mindora-purple bg-mindora-purple-pale text-mindora-purple-dark"
                             : "border-border bg-background text-foreground/80"

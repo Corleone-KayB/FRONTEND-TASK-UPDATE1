@@ -156,7 +156,7 @@ export function ReflectChat() {
           <button
             type="button"
             onClick={() => setDeleteDialogOpen(true)}
-            className="flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-[13px] font-semibold text-destructive shadow-[5px_5px_12px_#cdc6e0,-5px_-5px_12px_#fdfbff]"
+            className="flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 max-lg:min-h-11 text-[13px] font-semibold text-destructive shadow-[5px_5px_12px_#cdc6e0,-5px_-5px_12px_#fdfbff]"
           >
             <Trash2 className="h-3.5 w-3.5" />
             Delete history
@@ -187,7 +187,7 @@ export function ReflectChat() {
                   <p className="leading-relaxed">
                     {entry.content ?? "This message could not be displayed."}
                   </p>
-                  <a href={EMERGENCY_HREF} className="mt-2 inline-block font-bold underline">
+                  <a href={EMERGENCY_HREF} className="mt-2 inline-flex min-h-11 items-center font-bold underline">
                     Emergency: call {EMERGENCY_NUMBER}
                   </a>
                 </div>

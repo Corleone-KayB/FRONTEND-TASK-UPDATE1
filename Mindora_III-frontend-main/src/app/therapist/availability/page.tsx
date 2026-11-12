@@ -43,7 +43,11 @@ function DayRow({ day, onToggle, onChangeStart, onChangeEnd, invalid }: DayRowPr
   return (
     <div className="flex flex-wrap items-center gap-4 border-b border-border px-5 py-4 last:border-b-0">
       <div className="flex w-[150px] shrink-0 items-center gap-3">
-        <Checkbox checked={day.enabled} onCheckedChange={(v) => onToggle(v === true)} />
+        <Checkbox
+          className="relative after:absolute after:-inset-3 after:content-['']"
+          checked={day.enabled}
+          onCheckedChange={(v) => onToggle(v === true)}
+        />
         <span className="text-[14px] font-semibold text-foreground">
           {DAY_LABELS[day.dayOfWeek]}
         </span>

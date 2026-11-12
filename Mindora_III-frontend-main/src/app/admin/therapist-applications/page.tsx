@@ -137,7 +137,7 @@ export default function AdminTherapistApplicationsPage() {
                 key={col.key}
                 type="button"
                 onClick={() => toggleSort(col.key)}
-                className="inline-flex items-center gap-1 hover:text-mindora-purple"
+                className="inline-flex items-center gap-1 hover:text-mindora-purple max-lg:min-h-11"
               >
                 {col.label}
                 {sortBy === col.key &&

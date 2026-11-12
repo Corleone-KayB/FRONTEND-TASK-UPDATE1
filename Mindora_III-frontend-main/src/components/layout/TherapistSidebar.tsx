@@ -55,7 +55,7 @@ export function TherapistSidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium transition-colors",
+                "flex items-center gap-2.5 rounded-lg px-3 py-2 max-lg:min-h-11 text-[13px] font-medium transition-colors",
                 isActive
                   ? "bg-white/10 text-white"
                   : "text-white/55 hover:bg-white/5 hover:text-white"
@@ -80,7 +80,7 @@ export function TherapistSidebar() {
           <button
             type="button"
             onClick={handleSignOut}
-            className="rounded-md p-1.5 text-white/45 hover:bg-white/5 hover:text-white"
+            className="inline-flex items-center justify-center rounded-md p-1.5 text-white/45 hover:bg-white/5 hover:text-white max-lg:h-11 max-lg:w-11"
             aria-label="Sign out"
           >
             <LogOut className="h-3.5 w-3.5" />

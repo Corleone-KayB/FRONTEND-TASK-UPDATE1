@@ -32,7 +32,7 @@ export function BackLink({
       type="button"
       onClick={goBack}
       className={cn(
-        "inline-flex items-center gap-2 text-sm font-semibold",
+        "inline-flex items-center gap-2 text-sm font-semibold max-lg:min-h-11",
         light ? "text-white hover:text-white/80" : "text-mindora-purple hover:underline",
         className
       )}

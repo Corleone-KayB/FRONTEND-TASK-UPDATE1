@@ -128,7 +128,7 @@ export default function TherapyPage() {
           type="button"
           onClick={() => setTab("browse")}
           className={cn(
-            "rounded-[10px] px-4.5 py-2.5 text-[13.5px] font-semibold",
+            "rounded-[10px] px-4.5 py-2.5 max-lg:min-h-11 text-[13.5px] font-semibold",
             tab === "browse"
               ? "bg-white text-mindora-purple-dark shadow-[3px_3px_7px_#cdc6e0,-3px_-3px_7px_#fdfbff]"
               : "text-muted-foreground"
@@ -140,7 +140,7 @@ export default function TherapyPage() {
           type="button"
           onClick={() => setTab("mine")}
           className={cn(
-            "rounded-[10px] px-4.5 py-2.5 text-[13.5px] font-semibold",
+            "rounded-[10px] px-4.5 py-2.5 max-lg:min-h-11 text-[13.5px] font-semibold",
             tab === "mine"
               ? "bg-white text-mindora-purple-dark shadow-[3px_3px_7px_#cdc6e0,-3px_-3px_7px_#fdfbff]"
               : "text-muted-foreground"
@@ -248,7 +248,7 @@ export default function TherapyPage() {
                 type="button"
                 onClick={() => setMineStatus(key)}
                 className={cn(
-                  "rounded-[9px] px-3.5 py-1.5 text-[12.5px] font-semibold capitalize",
+                  "rounded-[9px] px-3.5 py-1.5 max-lg:min-h-11 text-[12.5px] font-semibold capitalize",
                   mineStatus === key
                     ? "bg-mindora-purple-pale text-mindora-purple-dark shadow-[inset_2px_2px_5px_#d3caeb,inset_-2px_-2px_5px_#ffffff]"
                     : "text-muted-foreground"

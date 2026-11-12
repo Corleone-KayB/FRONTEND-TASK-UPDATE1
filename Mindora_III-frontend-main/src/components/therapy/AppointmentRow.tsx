@@ -104,7 +104,7 @@ export function AppointmentRow({
           type="button"
           onClick={onCancel}
           className={cn(
-            "shrink-0 rounded-full px-3.5 py-2 text-[12.5px] font-semibold text-destructive",
+            "shrink-0 rounded-full px-3.5 py-2 max-lg:min-h-11 text-[12.5px] font-semibold text-destructive",
             "shadow-[3px_3px_7px_#cdc6e0,-3px_-3px_7px_#fdfbff]"
           )}
         >
@@ -115,7 +115,7 @@ export function AppointmentRow({
         <button
           type="button"
           onClick={onRate}
-          className="shrink-0 rounded-full bg-mindora-purple-pale px-3.5 py-2 text-[12.5px] font-semibold text-mindora-purple-dark shadow-[3px_3px_7px_#cdc6e0,-3px_-3px_7px_#fdfbff]"
+          className="shrink-0 rounded-full bg-mindora-purple-pale px-3.5 py-2 max-lg:min-h-11 text-[12.5px] font-semibold text-mindora-purple-dark shadow-[3px_3px_7px_#cdc6e0,-3px_-3px_7px_#fdfbff]"
         >
           Rate session
         </button>

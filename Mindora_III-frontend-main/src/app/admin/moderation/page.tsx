@@ -7,7 +7,7 @@ import { useModerationQueue, useResolveModerationReport } from "@/hooks/useAdmin
 import type { ModerationReport } from "@/types/domain";
 
 const ACTION_BUTTON =
-  "rounded-full px-3.5 py-2 text-[12.5px] font-semibold text-mindora-purple-dark shadow-[3px_3px_7px_#cdc6e0,-3px_-3px_7px_#fdfbff] disabled:opacity-50";
+  "rounded-full px-3.5 py-2 max-lg:min-h-11 text-[12.5px] font-semibold text-mindora-purple-dark shadow-[3px_3px_7px_#cdc6e0,-3px_-3px_7px_#fdfbff] disabled:opacity-50";
 
 function ReportRow({ report }: { report: ModerationReport }) {
   const [reason, setReason] = useState("");
@@ -32,7 +32,7 @@ function ReportRow({ report }: { report: ModerationReport }) {
           onChange={(e) => setReason(e.target.value)}
           aria-label={`Decision reason for report ${report.id}`}
           placeholder="Reason for your decision"
-          className="h-10 min-w-0 flex-1 basis-48 rounded-xl bg-transparent px-3 text-[13px] shadow-[inset_3px_3px_7px_#cdc6e0,inset_-3px_-3px_7px_#fdfbff] outline-none"
+          className="h-10 max-lg:h-11 min-w-0 flex-1 basis-48 rounded-xl bg-transparent px-3 text-[13px] shadow-[inset_3px_3px_7px_#cdc6e0,inset_-3px_-3px_7px_#fdfbff] outline-none"
         />
         <button
           type="button"

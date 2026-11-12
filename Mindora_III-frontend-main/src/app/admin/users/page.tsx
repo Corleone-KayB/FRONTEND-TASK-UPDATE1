@@ -95,7 +95,7 @@ export default function AdminUsersPage() {
                 <button
                   type="button"
                   onClick={() => setActionTarget(u)}
-                  className="shrink-0 rounded-full px-3.5 py-2 text-[12.5px] font-semibold text-mindora-purple-dark shadow-[3px_3px_7px_#cdc6e0,-3px_-3px_7px_#fdfbff]"
+                  className="shrink-0 rounded-full px-3.5 py-2 max-lg:min-h-11 text-[12.5px] font-semibold text-mindora-purple-dark shadow-[3px_3px_7px_#cdc6e0,-3px_-3px_7px_#fdfbff]"
                 >
                   {u.isActive ? "Suspend" : "Reactivate"}
                 </button>

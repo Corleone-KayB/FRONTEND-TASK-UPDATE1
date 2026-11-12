@@ -703,7 +703,7 @@ export default function AdminAnalyticsPage() {
             type="button"
             onClick={() => setPreset(p.key)}
             className={cn(
-              "rounded-full px-4 py-2 text-[12.5px] font-semibold transition-shadow",
+              "rounded-full px-4 py-2 max-lg:min-h-11 text-[12.5px] font-semibold transition-shadow",
               preset === p.key
                 ? "bg-mindora-purple text-white shadow-[3px_3px_7px_#cdc6e0,-3px_-3px_7px_#fdfbff]"
                 : "text-muted-foreground shadow-[3px_3px_7px_#cdc6e0,-3px_-3px_7px_#fdfbff] hover:text-foreground"

@@ -114,10 +114,10 @@ export function AppSidebar() {
           <p className="mt-2 text-[12px] leading-relaxed text-[#a29ab6]">
             24/7 crisis line - always answered.
           </p>
-          <Button asChild className="mt-2.5 h-9 w-full text-xs" size="sm">
+          <Button asChild className="mt-2.5 h-9 w-full text-xs max-lg:h-11" size="sm">
             <a href={CRISIS_LINE.href}>Call {CRISIS_LINE.display}</a>
           </Button>
-          <Button asChild className="mt-2 h-9 w-full bg-red-600 text-xs text-white hover:bg-red-700" size="sm">
+          <Button asChild className="mt-2 h-9 w-full bg-red-600 text-xs text-white hover:bg-red-700 max-lg:h-11" size="sm">
             <a href={EMERGENCY_HREF}>Emergency: {EMERGENCY_NUMBER}</a>
           </Button>
         </div>
@@ -133,7 +133,7 @@ export function AppSidebar() {
           <button
             type="button"
             onClick={handleSignOut}
-            className="rounded-md p-1.5 text-[#8d84a6] hover:text-white"
+            className="inline-flex items-center justify-center rounded-md p-1.5 text-[#8d84a6] hover:text-white max-lg:h-11 max-lg:w-11"
             aria-label="Sign out"
           >
             <LogOut className="h-3.5 w-3.5" />

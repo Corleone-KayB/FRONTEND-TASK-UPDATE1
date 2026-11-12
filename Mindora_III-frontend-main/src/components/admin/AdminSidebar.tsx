@@ -93,7 +93,7 @@ export function AdminSidebar() {
           <button
             type="button"
             onClick={handleSignOut}
-            className="rounded-md p-1.5 text-[#8d84a6] hover:text-white"
+            className="inline-flex items-center justify-center rounded-md p-1.5 text-[#8d84a6] hover:text-white max-lg:h-11 max-lg:w-11"
             aria-label="Sign out"
           >
             <LogOut className="h-3.5 w-3.5" />
