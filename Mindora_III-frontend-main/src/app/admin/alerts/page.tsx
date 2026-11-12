@@ -32,7 +32,7 @@ export default function AdminAlertsPage() {
 
       {isLoading ? (
         <p className="py-5 text-[13.5px] text-muted-foreground">Loading alerts…</p>
-      ) : alerts.length === 0 ? (
+      ) : isError ? null : alerts.length === 0 ? (
         <p className="py-8 text-center text-[13.5px] text-muted-foreground">
           No unresolved alerts.
         </p>
@@ -41,10 +41,10 @@ export default function AdminAlertsPage() {
           {alerts.map((alert) => (
             <div
               key={alert.id}
-              className="flex items-center justify-between gap-4 rounded-[18px] px-3.5 py-4"
+              className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded-[18px] px-3.5 py-4"
             >
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
+              <div className="min-w-0 flex-1 basis-48">
+                <div className="flex flex-wrap items-center gap-2">
                   <p className="text-[14px] font-semibold text-foreground">
                     {alert.eventType === "AI_CRISIS" ? "AI crisis detected" : "Mood concern"}
                   </p>

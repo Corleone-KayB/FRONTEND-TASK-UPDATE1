@@ -38,11 +38,11 @@ export default function AdminOverviewPage() {
 
       {isLoading ? (
         <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
-          {Array.from({ length: 8 }).map((_, i) => (
+          {Array.from({ length: 9 }).map((_, i) => (
             <div key={i} className="h-24 animate-pulse rounded-2xl bg-white/60" />
           ))}
         </div>
-      ) : (
+      ) : isError ? null : (
         <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
           <StatCard label="Total users" value={data?.totalUsers ?? null} />
           <StatCard label="Active users (30d)" value={data?.activeUsersLast30Days ?? null} />

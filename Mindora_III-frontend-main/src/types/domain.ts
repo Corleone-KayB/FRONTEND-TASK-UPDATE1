@@ -260,6 +260,13 @@ export interface AuditLogEntry {
   createdAt: string;
 }
 
+export interface ModerationReport {
+  id: string;
+  postId: string;
+  reason: string;
+  createdAt: string;
+}
+
 export interface SystemAlert {
   id: string;
   eventType: "AI_CRISIS" | "MOOD_CONCERN";

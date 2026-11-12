@@ -4,6 +4,7 @@ import type {
   AdminUserRecord,
   AuditLogEntry,
   DetailedAnalytics,
+  ModerationReport,
   PlatformAnalytics,
   SystemAlert,
   TherapistApplication,
@@ -26,13 +27,6 @@ interface SuspendReactivateResponse {
 
 // Community Service isn't deployed in V1, so this proxies to something that's always down -
 // callers should expect a 503 in the current environment.
-interface ModerationReport {
-  id: string;
-  postId: string;
-  reason: string;
-  createdAt: string;
-}
-
 interface ModerationQueueResponse {
   reports: ModerationReport[];
   total: number;

@@ -99,7 +99,7 @@ export default function AdminTherapistApplicationsPage() {
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           placeholder="Search by name, email, or license number"
-          className="h-12 w-[280px] rounded-xl"
+          className="h-12 w-full rounded-xl sm:w-[280px]"
         />
         <Select
           value={status}
@@ -108,7 +108,7 @@ export default function AdminTherapistApplicationsPage() {
             setPage(1);
           }}
         >
-          <SelectTrigger className="h-12 w-[220px] rounded-xl border-0 bg-transparent px-4 shadow-[inset_3px_3px_7px_#cdc6e0,inset_-3px_-3px_7px_#fdfbff]">
+          <SelectTrigger className="h-12 w-full rounded-xl border-0 sm:w-[220px] bg-transparent px-4 shadow-[inset_3px_3px_7px_#cdc6e0,inset_-3px_-3px_7px_#fdfbff]">
             <SelectValue placeholder="All statuses" />
           </SelectTrigger>
           <SelectContent>
@@ -129,9 +129,9 @@ export default function AdminTherapistApplicationsPage() {
 
       {isLoading ? (
         <p className="py-5 text-[13.5px] text-muted-foreground">Loading applications…</p>
-      ) : (
+      ) : isError ? null : (
         <div className="overflow-hidden rounded-[26px] bg-white p-2 shadow-[10px_10px_22px_#cbc4de,-10px_-10px_22px_#fdfbff]">
-          <div className="flex items-center gap-4 px-3.5 py-2.5 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-3.5 py-2.5 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
             {SORT_COLUMNS.map((col) => (
               <button
                 key={col.key}
@@ -160,9 +160,9 @@ export default function AdminTherapistApplicationsPage() {
                 key={app.id}
                 type="button"
                 onClick={() => router.push(`/admin/therapist-applications/${app.id}`)}
-                className="flex w-full items-center justify-between gap-4 rounded-[18px] px-3.5 py-4 text-left hover:bg-mindora-purple-bg/40"
+                className="flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-[18px] px-3.5 py-4 text-left hover:bg-mindora-purple-bg/40"
               >
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 basis-48">
                   <p className="truncate text-[14px] font-semibold text-foreground">
                     {app.fullName || "Untitled application"}
                   </p>
