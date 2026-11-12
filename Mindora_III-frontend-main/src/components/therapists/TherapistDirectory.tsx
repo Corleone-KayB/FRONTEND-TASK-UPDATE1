@@ -15,11 +15,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TherapistCard } from "@/components/therapists/TherapistCard";
-import {
-  SPECIALISATION_OPTIONS,
-  THERAPISTS,
-  matchesSpecialisation,
-} from "@/lib/mock-data/therapists";
+import { SPECIALISATION_OPTIONS, matchesSpecialisation } from "@/lib/mock-data/therapists";
+import { usePublicTherapists } from "@/hooks/usePublicTherapists";
 import { Button } from "@/components/ui/button";
 
 type SortKey = "rating" | "price" | "sessions";
@@ -27,6 +24,11 @@ type SortKey = "rating" | "price" | "sessions";
 export function TherapistDirectory() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { data, isLoading, isError, refetch } = usePublicTherapists();
+  const allTherapists = useMemo(() => data?.therapists ?? [], [data]);
+  // The availability / date / duration / gender filters read mock-only fields that
+  // real profiles do not have, so they are only offered on the mock directory.
+  const isMock = data?.source === "mock";
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("rating");
   const [availability, setAvailability] = useState<string[]>([]);
@@ -51,14 +53,15 @@ export function TherapistDirectory() {
   }
 
   const therapists = useMemo(() => {
-    let list = THERAPISTS.filter((therapist) => {
+    let list = allTherapists.filter((therapist) => {
       const haystack = `${therapist.name} ${therapist.title}`.toLowerCase();
       if (query && !haystack.includes(query.toLowerCase())) return false;
       if (!matchesSpecialisation(therapist.specialisations, specialisation || null)) return false;
-      if (availability.includes("Today") && !therapist.availableToday) return false;
-      if (availability.includes("This Week") && !therapist.availableThisWeek) return false;
-      if (availability.includes("Online") && !therapist.online) return false;
-      if (gender !== "all" && therapist.gender !== gender) return false;
+      if (isMock && availability.includes("Today") && !therapist.availableToday) return false;
+      if (isMock && availability.includes("This Week") && !therapist.availableThisWeek)
+        return false;
+      if (isMock && availability.includes("Online") && !therapist.online) return false;
+      if (isMock && gender !== "all" && therapist.gender !== gender) return false;
       return true;
     });
 
@@ -70,37 +73,41 @@ export function TherapistDirectory() {
     });
 
     return list;
-  }, [availability, gender, query, sort, specialisation]);
+  }, [allTherapists, availability, gender, isMock, query, sort, specialisation]);
 
   return (
     <div className="grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)]">
       <aside className="h-fit rounded-xl border border-border bg-white p-5 shadow-sm">
         <h2 className="text-lg font-bold text-mindora-purple">Filters</h2>
 
-        <section className="mt-6">
-          <h3 className="text-sm font-semibold">Availability</h3>
-          <div className="mt-3 space-y-3">
-            {["Today", "This Week", "Online"].map((option) => (
-              <label key={option} className="flex items-center gap-2 text-sm">
-                <Checkbox
-                  checked={availability.includes(option)}
-                  onCheckedChange={() => toggleAvailability(option)}
-                />
-                {option}
-              </label>
-            ))}
-          </div>
-        </section>
+        {isMock ? (
+          <>
+            <section className="mt-6">
+              <h3 className="text-sm font-semibold">Availability</h3>
+              <div className="mt-3 space-y-3">
+                {["Today", "This Week", "Online"].map((option) => (
+                  <label key={option} className="flex items-center gap-2 text-sm">
+                    <Checkbox
+                      checked={availability.includes(option)}
+                      onCheckedChange={() => toggleAvailability(option)}
+                    />
+                    {option}
+                  </label>
+                ))}
+              </div>
+            </section>
 
-        <section className="mt-6">
-          <h3 className="text-sm font-semibold">Specific date or range</h3>
-          <Input
-            type="date"
-            value={date}
-            onChange={(event) => setDate(event.target.value)}
-            className="mt-3 h-11"
-          />
-        </section>
+            <section className="mt-6">
+              <h3 className="text-sm font-semibold">Specific date or range</h3>
+              <Input
+                type="date"
+                value={date}
+                onChange={(event) => setDate(event.target.value)}
+                className="mt-3 h-11"
+              />
+            </section>
+          </>
+        ) : null}
 
         <section className="mt-6">
           <h3 className="text-sm font-semibold">Areas of interest</h3>
@@ -128,37 +135,41 @@ export function TherapistDirectory() {
           </Select>
         </section>
 
-        <section className="mt-6">
-          <h3 className="text-sm font-semibold">Duration</h3>
-          <RadioGroup value={duration} onValueChange={setDuration} className="mt-3">
-            {[
-              ["all", "All"],
-              ["30", "30 Min"],
-              ["60", "60 Min"],
-            ].map(([value, label]) => (
-              <label key={value} className="flex items-center gap-2 text-sm">
-                <RadioGroupItem value={value} id={`duration-${value}`} />
-                <Label htmlFor={`duration-${value}`}>{label}</Label>
-              </label>
-            ))}
-          </RadioGroup>
-        </section>
+        {isMock ? (
+          <>
+            <section className="mt-6">
+              <h3 className="text-sm font-semibold">Duration</h3>
+              <RadioGroup value={duration} onValueChange={setDuration} className="mt-3">
+                {[
+                  ["all", "All"],
+                  ["30", "30 Min"],
+                  ["60", "60 Min"],
+                ].map(([value, label]) => (
+                  <label key={value} className="flex items-center gap-2 text-sm">
+                    <RadioGroupItem value={value} id={`duration-${value}`} />
+                    <Label htmlFor={`duration-${value}`}>{label}</Label>
+                  </label>
+                ))}
+              </RadioGroup>
+            </section>
 
-        <section className="mt-6">
-          <h3 className="text-sm font-semibold">Therapist Gender</h3>
-          <RadioGroup value={gender} onValueChange={setGender} className="mt-3">
-            {[
-              ["all", "All"],
-              ["male", "Male"],
-              ["female", "Female"],
-            ].map(([value, label]) => (
-              <label key={value} className="flex items-center gap-2 text-sm">
-                <RadioGroupItem value={value} id={`gender-${value}`} />
-                <Label htmlFor={`gender-${value}`}>{label}</Label>
-              </label>
-            ))}
-          </RadioGroup>
-        </section>
+            <section className="mt-6">
+              <h3 className="text-sm font-semibold">Therapist Gender</h3>
+              <RadioGroup value={gender} onValueChange={setGender} className="mt-3">
+                {[
+                  ["all", "All"],
+                  ["male", "Male"],
+                  ["female", "Female"],
+                ].map(([value, label]) => (
+                  <label key={value} className="flex items-center gap-2 text-sm">
+                    <RadioGroupItem value={value} id={`gender-${value}`} />
+                    <Label htmlFor={`gender-${value}`}>{label}</Label>
+                  </label>
+                ))}
+              </RadioGroup>
+            </section>
+          </>
+        ) : null}
 
         <button
           type="button"
@@ -192,7 +203,23 @@ export function TherapistDirectory() {
           </Select>
         </div>
 
-        {therapists.length === 0 ? (
+        {isLoading ? (
+          <div className="space-y-4" aria-busy="true">
+            <div className="h-48 animate-pulse rounded-xl bg-[#F9F6FF]" />
+            <div className="h-48 animate-pulse rounded-xl bg-[#F9F6FF]" />
+          </div>
+        ) : isError ? (
+          <div
+            role="alert"
+            className="rounded-xl border border-border bg-[#F9F6FF] p-10 text-center"
+          >
+            <p className="font-semibold">We couldn&apos;t load the therapists</p>
+            <p className="mt-1 text-sm text-[#6B7280]">Check your connection and try again.</p>
+            <Button className="mt-4" size="sm" onClick={() => refetch()}>
+              Try again
+            </Button>
+          </div>
+        ) : therapists.length === 0 ? (
           <div className="rounded-xl border border-dashed border-border bg-[#F9F6FF] p-10 text-center">
             <p className="font-semibold">No therapists match these filters</p>
             <p className="mt-1 text-sm text-[#6B7280]">

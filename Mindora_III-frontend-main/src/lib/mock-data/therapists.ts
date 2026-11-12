@@ -19,7 +19,7 @@ export interface Therapist {
   price60?: number;
   price30?: number;
   specialisations: string[];
-  gender: TherapistGender;
+  gender?: TherapistGender;
   clientsChoice: boolean;
   availableToday: boolean;
   availableThisWeek: boolean;

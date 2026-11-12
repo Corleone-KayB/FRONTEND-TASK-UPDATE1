@@ -1,37 +1,42 @@
-import { notFound } from "next/navigation";
+"use client";
+
+import { use } from "react";
+import { useRouter } from "next/navigation";
 import { BackLink } from "@/components/public/BackLink";
-import { getTherapistById, THERAPISTS } from "@/lib/mock-data/therapists";
-import { TherapistAvatar } from "@/components/therapists/TherapistCard";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { BookingDialog } from "@/components/therapy/BookingDialog";
+import { TherapistNotFound } from "@/components/therapists/TherapistNotFound";
+import { useTherapists } from "@/hooks/useTherapists";
 
-export function generateStaticParams() {
-  return THERAPISTS.map((therapist) => ({ id: therapist.id }));
-}
-
-export default async function BookAppointmentPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const therapist = getTherapistById(id);
-  if (!therapist) notFound();
+// Landing page for "Book" on a public therapist. (app)/layout's RouteGuard has
+// already sent logged-out users to /login?returnUrl=<this path>, so by the time
+// this renders the user is logged in and the real list endpoint is available.
+// `id` is TherapistProfile.userId. Closing the dialog goes back to the list.
+export default function BookAppointmentPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const router = useRouter();
+  const { data, isLoading, isError } = useTherapists({});
+  const therapist = data?.therapists.find((item) => item.userId === id) ?? null;
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-12">
       <BackLink fallback="/therapists" className="mb-4" />
-      <p className="text-sm text-[#6B7280]">Booking</p>
-      <div className="mt-4 flex items-center gap-3">
-        <TherapistAvatar therapist={therapist} size={48} />
-        <div>
-          <h1 className="text-2xl font-bold">{therapist.name}</h1>
-          <p className="text-sm text-[#6B7280]">{therapist.title}</p>
-        </div>
-      </div>
-      <p className="mt-6 rounded-xl bg-[#F9F6FF] p-4 text-sm leading-relaxed text-[#6B7280]">
-        Session booking will connect to the appointments service soon.
-        {therapist.nearest ? ` Nearest open time: ${therapist.nearest}.` : null}
-      </p>
-      <Button asChild className="mt-6">
-        <Link href="/therapists">Back to therapists</Link>
-      </Button>
+      {isLoading ? (
+        <div className="h-24 animate-pulse rounded-xl bg-[#F9F6FF]" aria-busy="true" />
+      ) : therapist ? (
+        <>
+          <h1 className="text-2xl font-bold">
+            Book a session with {therapist.userName ?? "your therapist"}
+          </h1>
+          <BookingDialog
+            therapist={therapist}
+            onOpenChange={(open) => {
+              if (!open) router.push("/therapy");
+            }}
+          />
+        </>
+      ) : (
+        <TherapistNotFound listHref="/therapy" loadFailed={isError} />
+      )}
     </div>
   );
 }

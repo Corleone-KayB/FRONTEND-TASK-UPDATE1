@@ -36,6 +36,7 @@ export function TherapistAvatar({
         alt={therapist.name}
         width={size}
         height={size}
+        unoptimized={/^https?:\/\//.test(therapist.photo)}
         className="shrink-0 rounded-full object-cover"
         style={{ width: size, height: size }}
       />

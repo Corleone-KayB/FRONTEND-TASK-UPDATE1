@@ -1,7 +1,7 @@
 export function getBookNowHref(therapistId: string, isAuthenticated: boolean) {
   const intended = `/appointments/book/${therapistId}`;
   if (isAuthenticated) return intended;
-  return `/signup?returnUrl=${encodeURIComponent(intended)}`;
+  return `/login?returnUrl=${encodeURIComponent(intended)}`;
 }
 
 export function safeReturnUrl(value: string | null | undefined, fallback = "/today") {
