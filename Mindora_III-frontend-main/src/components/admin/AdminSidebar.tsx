@@ -45,7 +45,7 @@ export function AdminSidebar() {
   }
 
   return (
-    <aside className="flex h-full w-[220px] shrink-0 flex-col self-stretch gap-6 bg-mindora-sidebar px-3.5 pb-5 pt-6 text-white shadow-[10px_0_26px_rgba(33,29,44,0.22)]">
+    <aside className="flex h-full w-full shrink-0 flex-col self-stretch gap-6 bg-mindora-sidebar px-3.5 pb-5 pt-6 text-white shadow-[10px_0_26px_rgba(33,29,44,0.22)]">
       <div className="flex items-center justify-between px-1.5">
         <MindoraLogo variant="light" size="md" />
         <NotificationBell />

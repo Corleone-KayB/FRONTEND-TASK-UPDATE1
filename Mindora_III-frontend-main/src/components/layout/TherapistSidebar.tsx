@@ -37,7 +37,7 @@ export function TherapistSidebar() {
   }
 
   return (
-    <aside className="flex h-full w-[220px] shrink-0 flex-col self-stretch bg-mindora-sidebar text-white">
+    <aside className="flex h-full w-full shrink-0 flex-col self-stretch bg-mindora-sidebar text-white">
       <div className="flex items-center justify-between px-5 py-5">
         <MindoraLogo variant="light" size="md" />
         <NotificationBell />
