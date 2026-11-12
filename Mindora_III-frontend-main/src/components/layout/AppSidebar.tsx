@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { CRISIS_LINE, EMERGENCY_HREF, EMERGENCY_NUMBER } from "@/lib/crisis";
 import { usePathname, useRouter } from "next/navigation";
 import {
   AlertTriangle,
@@ -114,7 +115,10 @@ export function AppSidebar() {
             24/7 crisis line - always answered.
           </p>
           <Button asChild className="mt-2.5 h-9 w-full text-xs" size="sm">
-            <a href="tel:0783974066">Call 0 783 974 066</a>
+            <a href={CRISIS_LINE.href}>Call {CRISIS_LINE.display}</a>
+          </Button>
+          <Button asChild className="mt-2 h-9 w-full bg-red-600 text-xs text-white hover:bg-red-700" size="sm">
+            <a href={EMERGENCY_HREF}>Emergency: {EMERGENCY_NUMBER}</a>
           </Button>
         </div>
 

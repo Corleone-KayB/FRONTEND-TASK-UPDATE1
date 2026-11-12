@@ -6,6 +6,8 @@ import { useAiHistory, useSendAiChat } from "@/hooks/useAi";
 import { DeleteAiHistoryDialog } from "@/components/reflect/DeleteAiHistoryDialog";
 import { AiRateLimitError } from "@/lib/ai-api";
 import { ApiError } from "@/lib/api";
+import { useCrisis } from "@/contexts/CrisisContext";
+import { EMERGENCY_HREF, EMERGENCY_NUMBER, isCrisisResponse } from "@/lib/crisis";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import type { AiInteraction } from "@/types/domain";
@@ -27,12 +29,13 @@ function entriesFromInteraction(interaction: AiInteraction): TranscriptEntry[] {
       key: `${interaction.id}-assistant`,
       role: "assistant",
       content: interaction.response,
-      crisis: interaction.crisisLevel === 5,
+      crisis: isCrisisResponse(interaction),
     },
   ];
 }
 
 export function ReflectChat() {
+  const { trigger: triggerCrisis } = useCrisis();
   const [input, setInput] = useState("");
   const [liveEntries, setLiveEntries] = useState<TranscriptEntry[]>([]);
   const [rateLimitedUntil, setRateLimitedUntil] = useState<number | null>(null);
@@ -91,13 +94,14 @@ export function ReflectChat() {
       {
         onSuccess: (data) => {
           sessionIdRef.current = data.sessionId;
+          if (isCrisisResponse(data)) triggerCrisis("ai-chat", data.response);
           setLiveEntries((prev) => [
             ...prev,
             {
               key: nextKey("live-assistant"),
               role: "assistant",
               content: data.response,
-              crisis: data.crisisLevel === 5,
+              crisis: isCrisisResponse(data),
             },
           ]);
         },
@@ -183,6 +187,9 @@ export function ReflectChat() {
                   <p className="leading-relaxed">
                     {entry.content ?? "This message could not be displayed."}
                   </p>
+                  <a href={EMERGENCY_HREF} className="mt-2 inline-block font-bold underline">
+                    Emergency: call {EMERGENCY_NUMBER}
+                  </a>
                 </div>
               </div>
             ) : (

@@ -1,3 +1,4 @@
+import { CRISIS_LINE } from "@/lib/crisis";
 import Link from "next/link";
 import { CalendarHeart, MessageCircle, PenLine, RefreshCw } from "lucide-react";
 import { MindoraLogo } from "@/components/brand/MindoraLogo";
@@ -85,8 +86,8 @@ export default function LandingPage() {
       <footer className="border-t border-border px-6 py-8 text-center lg:px-14">
         <p className="text-xs text-muted-foreground">
           24/7 crisis line - always answered.{" "}
-          <a href="tel:+250783974068" className="font-semibold text-mindora-purple hover:underline">
-            Call +250 783 974 068
+          <a href={CRISIS_LINE.href} className="font-semibold text-mindora-purple hover:underline">
+            Call {CRISIS_LINE.display}
           </a>
         </p>
         <p className="mt-3 text-xs text-muted-foreground/70">

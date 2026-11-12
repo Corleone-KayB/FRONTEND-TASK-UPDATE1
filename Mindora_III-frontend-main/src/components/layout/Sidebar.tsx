@@ -1,5 +1,6 @@
 "use client";
 
+import { CRISIS_LINE } from "@/lib/crisis";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -63,11 +64,11 @@ export function Sidebar() {
           <p className="text-white text-xs font-medium mb-1">Need someone now?</p>
           <p className="text-text-muted text-xs mb-2">24/7 crisis line - always answered.</p>
           <a
-            href="tel:+250783974068"
+            href={CRISIS_LINE.href}
             className="flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary-dark text-white text-xs font-medium py-1.5 rounded-md transition-colors"
           >
             <Phone size={12} />
-            Call +250 783 974 068
+            Call {CRISIS_LINE.display}
           </a>
         </div>
 

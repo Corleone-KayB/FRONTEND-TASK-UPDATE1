@@ -5,6 +5,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ApiError } from "@/lib/api";
+import { CrisisProvider } from "@/contexts/CrisisContext";
+import { CrisisOverlay } from "@/components/crisis/CrisisOverlay";
 import { Toaster } from "@/components/ui/sonner";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -27,7 +29,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        {children}
+        <CrisisProvider>
+          {children}
+          <CrisisOverlay />
+        </CrisisProvider>
         <Toaster position="top-right" />
         <ReactQueryDevtools initialIsOpen={false} />
       </AuthProvider>
