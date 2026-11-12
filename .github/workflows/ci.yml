@@ -16,27 +16,25 @@ permissions:
 
 jobs:
   validate-and-build:
-    name: Validate and build production frontend
+    name: Validate production frontend
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: Mindora_III-frontend-main
     env:
       NEXT_PUBLIC_API_URL: https://api.mindora.rw
-      NEXT_PUBLIC_SOCKET_URL: https://api.mindora.rw
+      NEXT_PUBLIC_MESSAGING_WS_URL: https://api.mindora.rw
     steps:
       - name: Check out source
         uses: actions/checkout@v4
 
-      - name: Set up Node.js 24.16.0
+      - name: Set up Node.js 24
         uses: actions/setup-node@v4
         with:
-          node-version: 24.16.0
-          cache: npm
-          cache-dependency-path: Mindora_III-frontend-main/package-lock.json
+          node-version: 24
 
-      - name: Install locked dependencies
-        run: npm ci
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
 
       - name: TypeScript type check
         run: npm run type-check
