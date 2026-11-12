@@ -28,7 +28,7 @@ Status: **ANALYSIS COMPLETE — AWAITING APPROVAL. No application code has been 
 4. `/admin/moderation` never renders reports — only loading/error/empty branches exist.
 
 **Biggest risks (need human decisions — see §I)**
-- **Conflicting crisis-line numbers in production code**: `AppSidebar.tsx` dials `0783974066`; `Sidebar.tsx` (dead) and `welcome/page.tsx` dial `+250 783 974 068`. One is wrong. Safety-critical.
+- **Crisis-line number (RESOLVED)**: the crisis line is **+250 783 974 066**, confirmed, and defined in `src/lib/crisis.ts` (single source of truth). The earlier `068` / `0783974066` inconsistency is fixed.
 - **No `package-lock.json` is committed**, but CI (`.github/workflows/ci.yml`) and the `Dockerfile` both run `npm ci`, which fails without a lockfile.
 - README is stale (claims Axios, Zustand, `src/store/`, `src/providers/` — none exist).
 
@@ -195,6 +195,8 @@ All paths are prefixed `/api/v1`. No secrets in the frontend: the only env vars 
 ## F. Exact File-Level Plan
 
 ### Step 1 — Crisis overlay (P0)
+
+**Status:** built, tested with mocked responses at 375/768/1280 (evidence in `docs/evidence/crisis/`); **NOT yet deployed; NOT yet tested against the real backend; clinical sign-off pending.**
 
 **New**
 - `src/contexts/CrisisContext.tsx`
